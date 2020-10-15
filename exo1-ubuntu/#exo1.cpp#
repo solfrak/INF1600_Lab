@@ -1,0 +1,34 @@
+#include "exo1.h"
+
+//TODO
+uint32_t toBigEndian(uint32_t value) {
+    return 0;
+}
+
+//TODO
+uint32_t convertToInteger(uint8_t* bytes){
+    return 0;
+}
+
+//TODO
+uint8_t* convertToBytes(uint32_t value){
+    
+    return 0;
+}
+
+int main()
+{
+    /*
+    int size; 
+    uint32_t* tableau_32bits = lireFichier("x.gif", size, convertToInteger);
+    uint32_t* resultat_sortie = new uint32_t[size];
+
+    //TODO
+    
+
+    ecrireFichier("x-decode.gif", resultat_sortie, size, convertToBytes);
+    delete[] resultat_sortie;
+    delete[] tableau_32bits;*/
+    runTests(toBigEndian,convertToInteger,convertToBytes);
+    
+}
