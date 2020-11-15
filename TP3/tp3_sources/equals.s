@@ -24,15 +24,15 @@ matrix_equals_asm:
         movl $0, ITR                # Initialiser le compteur de rangées   
         
         LOOP1:            
-                movl $0, ITC            # Remettre le compteur de colonnes a 0 pour la prochaine rangées
+                movl $0, ITC            # Remettre le compteur de colonnes a 0 pour la prochaine rangée
                 
-                # 3. Test de continuité dans les rangées
+                # 3. Test de continuité sur les rangées
                 cmp ITR, %ebx           # Comparer le compteur de rangées avec le matorder
-                je EQUAL                # Si les deux valeurs sont égales alors on a passé toutes les valeurs des matrices donc les matrices sont égales
+                je EQUAL                # Si égales, alors on a passé toutes les éléments des matrices, donc les matrices sont égales
         LOOP2:
-                # 4. Test de continuité dans les colonnes
+                # 4. Test de continuité sur les colonnes
                 cmp ITC, %ebx            # Comparer le compteur de colonnes avec le matorder
-                je LOOP2END              # Si les deux valeurs sont égales alors on a passé toutes les valeurs de la colonne donc on saute a la fonction LOOP1END      
+                je LOOP2END              # Si égales, alors on a passé toutes les valeurs de la colonne    
                 
                 
                 # 5. Calcul de l'indice dans la matrice inmatdata1
@@ -45,16 +45,16 @@ matrix_equals_asm:
 
                 # 6. Déterminer si les valeurs trouvées en 4 sont égales
                 cmp %esi, %edi              # Comparer les valeurs prises dans les deux matrices
-                jne NOTEQUAL                # Si les valeurs ne sont pas égale on saute a la fonction NOTEQUAL sinon on continue dans la boucle
+                jne NOTEQUAL                # Si pas égales, on saute a la fonction NOTEQUAL, sinon on continue dans la boucle
 
-                # 7. Itérer le compteur de colonnes et on recommence la boucle pour aller faire le test de continuité sur les colonnes
-                addl $1, ITC                # Itération du compteur de rangées
-                jmp LOOP2                   # On saute a la boucle 2 
+                # 7. Pochaine colonne
+                addl $1, ITC                # Itération compteur de colonnes
+                jmp LOOP2                   # Retour debut boucle 2
 
         LOOP2END:
-                # 8. Fin de la boucle intérieur
-                addl $1, ITR                # Itération du compteur de rangées
-                jmp LOOP1                   # On saute a la boucle 1 pour aller faire le test de continuité sur les rangées
+                # 8. Prochaine rangée
+                addl $1, ITR                # Itération compteur de rangées
+                jmp LOOP1                   # Saute début boucle 1
 
         EQUAL:
                 # 9. Les deux matrices sont égales, alors on retourne 1
@@ -62,7 +62,7 @@ matrix_equals_asm:
                 jmp FIN                     # On saute a la fin du programme
                                     
         NOTEQUAL: 
-                # 10. Les deux matrices ont au moins un élément qui n'est pas égale, alors on retourne 0
+                # 10. Les deux matrices ont au moins un élément qui n'est pas égal, alors on retourne 0
                 movl $0, %eax               # mettre 0 dans le registre eax (registre de sortie) pour que la valeur de retour soit 0  
                 jmp FIN                     # On saute a la fin du programme
        
@@ -71,7 +71,7 @@ matrix_equals_asm:
                 popl %edi
                 popl %esi
                 popl %ebx
-                leave          /* Restore ebp and esp */
-                ret            /* Return to the caller */
+                leave          # Restore ebp and esp
+                ret            # Return to the caller 
 
                

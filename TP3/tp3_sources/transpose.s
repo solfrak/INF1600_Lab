@@ -6,8 +6,8 @@ matrix_transpose_asm:
         ITR: .int 0             # Compteur de rangées
         .text
 
-        push %ebp      /* Save old base pointer */
-        mov %esp, %ebp /* Set ebp to current esp */
+        push %ebp               # Save old base pointer 
+        mov %esp, %ebp          # Set ebp to current esp
         
         # 1. Sauvegarder les registres dans la pile
         pushl %esi
@@ -22,15 +22,15 @@ matrix_transpose_asm:
         movl $0, ITR                # Initialiser le compteur de rangées
         
         LOOP1:
-                movl $0, ITC            # Remettre le compteur de colonnes a 0 pour la prochaine rangées
+                movl $0, ITC            # Remettre le compteur de colonnes a 0 pour la prochaine rangée
                
                 # 3. Test de continuité dans les rangées
                 cmp ITR, %ebx           # Comparer le compteur de rangées avec le matorder
-                je FIN                  # Si les deux valeurs sont égales alors on a passé toutes les valeurs des matrices, donc on saute a la fin du programme
+                je FIN                  # Si égales, fin des rangées
         LOOP2:
                 # 4. Test de continuité dans les colonnes
                 cmp ITC, %ebx            # Comparer le compteur de colonnes avec le matorder
-                je LOOP2END              # Si les deux valeurs sont égales alors on a passé toutes les colonnes, donc on saute a la fonction LOOP1END
+                je LOOP2END              # Si égales, fin de la colonne
 
                 # 5. Calcul de l'indice dans la matrice inmatdata et accéder a la valeur dans la matrice
                 movl ITC, %eax          # Mettre ITC dans un registre
@@ -46,21 +46,21 @@ matrix_transpose_asm:
 
                 movl %edx, (%edi, %eax, 4)      # Mettre la valeur de inmatdata dans outmatdata a l'indice calculé
                 
-                # 7. Itérer le compteur de colonnes et on recommence la boucle pour aller faire le test de continuité sur les colonnes
-                addl $1, ITC                # Itération du compteur de rangées
-                jmp LOOP2                   # On saute a la boucle 2 
+                # 7. Fin de la colonne
+                addl $1, ITC                # Itération du compteur de colonnes
+                jmp LOOP2                   # Retour a la boucle 2 pour faire le test de continuité
                 
         LOOP2END:
-                # 8. Fin de la boucle intérieur
+                # 8. Fin d'une rangée
                 addl $1, ITR                # Itération du compteur de rangées
-                jmp LOOP1                   # On saute a la boucle 1 pour aller faire le test de continuité sur les rangées
+                jmp LOOP1                   # On saute a la boucle 1 pour faire le test de continuité
 
         FIN:
                 # 9. Reprendre les valeurs initiales et quitter le programme
                 popl %ebx
                 popl %edi
                 popl %esi
-                leave          /* Restore ebp and esp */
-                ret
+                leave                   # Restore ebp and esp 
+                ret                     # Return to the caller 
 
                 

@@ -8,8 +8,8 @@ matrix_multiply_asm:
         BUFF: .int 0            # Buffer pour calculer les éléments
         .text
 
-        push %ebp      /* Save old base pointer */
-        movl %esp, %ebp /* Set ebp to current esp */
+        push %ebp               # Save old base pointer 
+        mov %esp, %ebp          # Set ebp to current esp
 
         # 1. Sauvegarder les registres dans la pile
         pushl %esi
@@ -23,24 +23,24 @@ matrix_multiply_asm:
         
         movl $0, ITR                # Initialiser le compteur de rangées
         LOOP1:
-                movl $0, ITC        # Remettre le compteur de colonnes a 0 pour la prochaine rangées
+                movl $0, ITC        # Remettre le compteur de colonnes a 0 pour la prochaine rangée
                 
-                # 3. Test de continuité dans les rangées
+                # 3. Test de continuité sur les rangées
                 cmp ITR, %ebx           # Comparer le compteur de rangées avec le matorder
-                je FIN                  # Si les deux valeurs sont égales alors on a passé toutes les valeurs des matrices, donc on saute a la fin du programme
+                je FIN                  # Si égales, fin des rangées
 
         LOOP2:
                 movl $0, BUFF           # Remettre le buffer a 0 pour le prochain calcul
                 movl $0, INDEX          # Remettre le compteur de colonnes a 0 pour la prochaine rangées
                 
-                # 4. Test de continuité dans les colonnes
+                # 4. Test de continuité sur les colonnes
                 cmp ITC, %ebx           # Comparer le compteur de rangées avec le matorder
-                je LOOP2END             # Si les deux valeurs sont égales alors on a passé toutes les colonnes, donc on saute a la fonction LOOP2END      
+                je LOOP2END             ## Si égales, fin de la colonne     
 
         LOOP3:     
-                # 5. Test de continuité dans les éléments
+                # 5. Test de continuité sur les éléments
                 cmp INDEX, %ebx         # Comparer le nombre d'éléments parcourus avec le matorder
-                je LOOP3END             # Si les deux valeurs sont égales alors on a passé toutes les éléments, donc on saute a la fonction LOOP3END
+                je LOOP3END             # Si égales, fin des éléments
 
                 # 6. Calculer l'indice et accèder à la valeur dans la matrice inmatdata1 
                 movl ITR, %eax          # Mettre ITR dans un registre
@@ -61,27 +61,27 @@ matrix_multiply_asm:
                 addl %edx, BUFF         # Ajouter le resultat au Buffer
                 movl BUFF, %ecx         # Mettre le Buffer dans un registre
 
-                # 9. Calculer l'indice et accèder à l'addresse voulue de outmatdata
+                # 9. Calculer l'indice et accèder à l'adresse voulue de outmatdata
                 movl ITR, %eax          # Mettre ITR dans un registre
                 imul %ebx, %eax         # ITR * matorder
                 addl ITC, %eax          # ITC + (ITR * matorder)
 
                 movl 16(%ebp), %edx     # Aller chercher outmatdata
-                movl %ecx, (%edx, %eax, 4)      # Mettre le reésultat de la multiplication dans la matrice outmatdata a l'indice calculé
+                movl %ecx, (%edx, %eax, 4)      # Mettre le résultat de la multiplication dans la matrice outmatdata a l'indice calculé
 
-                # 10. On itère l'index pour accéder aux valeurs suivantes dans les colonnes/rangées des matrices d'input
+                # 10. Prochain index
                 addl $1, INDEX          # Itération de l'index
-                jmp LOOP3               # On saute au debut de la boucle 3 pour aller faire le test de continuité sur les indexs
+                jmp LOOP3               # Retour au debut de la boucle 3 pour aller faire le test de continuité
 
         LOOP3END:
-                # 11. Fin de la multiplication pour un élément, on passe a la prochaine colonne
+                # 11. Prochaine colonne
                 add $1, ITC             # Itération du compteur de colonnes
-                jmp LOOP2               # On saute a la boucle 2 pour aller faire le test de continuité sur les colonnes
+                jmp LOOP2               # On saute a la boucle 2 pour faire le test de continuité
 
         LOOP2END:
-                # 12. Fin de la rangée, on itère et passe a la prochaine rangée
+                # 12. Prochaine rangée
                 add $1, ITR             # Itération du compteur de rangée
-                jmp LOOP1               # On saute a la boucle 1 pour aller faire le test de continuité sur les rangées
+                jmp LOOP1               # On saute a la boucle 1 pour faire le test de continuité
 
         
         FIN:
@@ -89,6 +89,6 @@ matrix_multiply_asm:
                 popl %ebx
                 popl %edi
                 popl %esi
-                leave          /* Restore ebp and esp */
-                ret            /* Return to the caller */
+                leave          # Restore ebp and esp
+                ret            # Return to the caller
 

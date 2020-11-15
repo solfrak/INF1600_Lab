@@ -7,8 +7,8 @@ matrix_row_aver_asm:
         BUFF: .int 0            # Buffer pour calculer les éléments
         .text
 
-        push %ebp               /* Save old base pointer */
-        movl %esp, %ebp         /* Set ebp to current esp */
+        ppush %ebp               # Save old base pointer 
+        mov %esp, %ebp           # Set ebp to current esp
 
         # 1. Sauvegarder les registres dans la pile
         pushl %esi
@@ -23,17 +23,17 @@ matrix_row_aver_asm:
         movl $0, ITR                # Initialiser le compteur de rangées
         
         LOOP1:
-                movl $0, ITC        # Remettre le compteur de colonnes a 0 pour la prochaine rangées
-                movl $0, BUFF       # Remettre le buffer a 0
+                movl $0, ITC        # Remettre le compteur de colonnes a 0 pour la prochaine rangée
+                movl $0, BUFF       # Remettre le buffer a 0 pour le prochain calcul
                 
-                # 3. Test de continuité dans les rangées
+                # 3. Test de continuité sur les rangées
                 cmp ITR, %ebx           # Comparer le compteur de rangées avec le matorder
-                je FIN                  # Si les deux valeurs sont égales alors on a passé toutes les valeurs des matrices, donc on saute a la fin du programme
+                je FIN                  # Si égales, fin des rangées
 
         LOOP2:
-                # 4. Test de continuité dans les colonnes
+                # 4. Test de continuité sur les colonnes
                 cmp ITC, %ebx           # Comparer le compteur de colonnes avec le matorder
-                je LOOP2END             # Si les deux valeurs sont égales alors on a passé toutes les colonnes, donc on saute a la fonction LOOP2END      
+                je LOOP2END             # Si égales, fin de la colonne 
 
                 # 6. Calcule de l'indice
                 movl ITR, %eax          # Mettre ITR dans un registre
@@ -44,7 +44,7 @@ matrix_row_aver_asm:
                 movl (%esi, %eax, 4), %edx      # Accéder a la valeur de inmatdata a l'indice calculé
                 addl %edx, BUFF                 # Additionner la valeur aux autres éléments additionner
 
-                # 10. On itere le compteur de colonnes et on revient au début de la boucle 
+                # 10. On itère le compteur de colonnes et on revient au début de la boucle 
                 addl $1, ITC            # Itération du compteur de colonnes
                 jmp LOOP2               # On saute au début de la boucle pour faire le test de continuation sur les colonnes
 
@@ -65,6 +65,6 @@ matrix_row_aver_asm:
                 popl %esi
                 popl %edi
                 popl %ebx
-                leave          			/* Restore ebp and esp */
-                ret           			/* Return to the caller */
+                leave          	        # Restore ebp and esp 
+                ret           	        # Return to the caller 
 		
