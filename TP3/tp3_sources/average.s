@@ -7,7 +7,7 @@ matrix_row_aver_asm:
         BUFF: .int 0            # Buffer pour calculer les éléments
         .text
 
-        ppush %ebp               # Save old base pointer 
+        push %ebp               # Save old base pointer 
         mov %esp, %ebp           # Set ebp to current esp
 
         # 1. Sauvegarder les registres dans la pile
